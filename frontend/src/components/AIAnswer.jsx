@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Sparkles, ThumbsUp, ThumbsDown, Brain, Zap, Star, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { aiAPI } from '../services/aiAPI';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 
 const AIAnswer = ({ questionId }) => {
   const [aiAnswer, setAiAnswer] = useState(null);

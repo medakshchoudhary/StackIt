@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, BarChart3, AlertTriangle, MessageSquare, Download } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 import { adminAPI } from '../services/adminAPI';
 import { formatDate } from '../utils/helpers';
 

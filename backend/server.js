@@ -37,6 +37,9 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+// Serve static files
+app.use('/uploads', express.static('uploads'));
+
 // Mount routers
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/questions', require('./routes/questions'));
@@ -48,6 +51,7 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/tags', require('./routes/tags'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/ai', require('./routes/ai')); // AI routes
+app.use('/api/upload', require('./routes/upload')); // Upload routes
 
 // Error handler middleware
 app.use(errorHandler);

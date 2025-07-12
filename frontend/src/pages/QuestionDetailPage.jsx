@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Eye, MessageSquare, ThumbsUp, Calendar, User } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 import { questionsAPI } from '../services/questionsAPI';
 import { answersAPI } from '../services/answersAPI';
 import RichTextEditor from '../components/RichTextEditor';

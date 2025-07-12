@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, LogOut, User } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { Plus, LogOut, User, Home } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = () => {
@@ -24,6 +24,14 @@ const Navbar = () => {
 
           {/* Navigation Links */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+            <Link
+              to="/"
+              className="flex items-center space-x-1 sm:space-x-2 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base"
+            >
+              <Home size={16} />
+              <span className="hidden sm:inline">Home</span>
+            </Link>
+            
             {isAuthenticated ? (
               <>
                 <Link

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MessageSquare, ChevronUp, ChevronDown, Edit, Trash2, Reply, Plus, Minus } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 import { commentsAPI } from '../services/commentsAPI';
 import { timeAgo } from '../utils/helpers';
 

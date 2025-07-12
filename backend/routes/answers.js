@@ -4,7 +4,9 @@ const { check } = require('express-validator');
 const {
     createAnswer,
     updateAnswer,
-    deleteAnswer
+    deleteAnswer,
+    voteAnswer,
+    acceptAnswer
 } = require('../controllers/answerController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -20,5 +22,11 @@ router.post(
 router.route('/:id')
     .put(protect, updateAnswer)
     .delete(protect, deleteAnswer);
+
+// Vote on answer
+router.post('/:id/vote', protect, voteAnswer);
+
+// Accept answer
+router.post('/:id/accept', protect, acceptAnswer);
 
 module.exports = router;

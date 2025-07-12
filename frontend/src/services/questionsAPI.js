@@ -33,5 +33,10 @@ export const questionsAPI = {
   acceptAnswer: async (questionId, answerId) => {
     const response = await axios.post(`/questions/${questionId}/accept-answer/${answerId}`);
     return response.data;
+  },
+
+  voteQuestion: async (questionId, value) => {
+    const response = await axios.post(`/questions/${questionId}/vote`, { value });
+    return response.data;
   }
 };

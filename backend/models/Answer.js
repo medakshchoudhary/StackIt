@@ -20,11 +20,17 @@ const answerSchema = new mongoose.Schema({
     votes: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         },
-        value: {
-            type: Number,
-            enum: [-1, 1]
+        vote: {
+            type: String,
+            enum: ['up', 'down'],
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
         }
     }],
     isAccepted: {
@@ -42,7 +48,9 @@ const answerSchema = new mongoose.Schema({
 // Update vote count when votes array is modified
 answerSchema.pre('save', function(next) {
     if (this.isModified('votes')) {
-        this.voteCount = this.votes.reduce((acc, vote) => acc + vote.value, 0);
+        this.voteCount = this.votes.reduce((acc, vote) => {
+            return acc + (vote.vote === 'up' ? 1 : -1);
+        }, 0);
     }
     next();
 });

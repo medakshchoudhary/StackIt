@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { votingAPI } from '../services/votingAPI';
-import { useAuth } from '../hooks/useAuth';
+import { questionsAPI } from '../services/questionsAPI';
+import { useAuth } from '../context/AuthContext';
 
-const VoteComponent = ({ answerId, initialVoteCount = 0, userVote = null, onVoteChange }) => {
+const VoteComponent = ({ 
+  type = 'answer', // 'question' or 'answer'
+  itemId, // questionId or answerId
+  initialVoteCount = 0, 
+  userVote = null, 
+  onVoteChange 
+}) => {
   const [voteCount, setVoteCount] = useState(initialVoteCount);
   const [currentVote, setCurrentVote] = useState(userVote);
   const [loading, setLoading] = useState(false);
@@ -19,7 +26,13 @@ const VoteComponent = ({ answerId, initialVoteCount = 0, userVote = null, onVote
 
     try {
       setLoading(true);
-      const response = await votingAPI.voteOnAnswer(answerId, value);
+      let response;
+      
+      if (type === 'question') {
+        response = await questionsAPI.voteQuestion(itemId, value);
+      } else {
+        response = await votingAPI.voteOnAnswer(itemId, value);
+      }
       
       if (response.success) {
         setVoteCount(response.data.voteCount);
@@ -35,34 +48,33 @@ const VoteComponent = ({ answerId, initialVoteCount = 0, userVote = null, onVote
   };
 
   return (
-    <div className="flex flex-col items-center space-y-2">
+    <div className="flex flex-col items-center space-y-1">
       <button
-        onClick={() => handleVote(1)}
-        disabled={loading}
-        className={`p-2 rounded-full transition-colors ${
-          currentVote === 1
+        onClick={() => handleVote('up')}
+        disabled={loading || !isAuthenticated}
+        className={`p-2 rounded-full transition-colors duration-200 ${
+          currentVote === 'up'
             ? 'bg-green-100 text-green-600'
             : 'text-gray-400 hover:text-green-600 hover:bg-green-50'
-        } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        } ${loading || !isAuthenticated ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <ChevronUp size={20} />
       </button>
       
-      <span className={`text-lg font-semibold ${
-        voteCount > 0 ? 'text-green-600' : 
-        voteCount < 0 ? 'text-red-600' : 'text-gray-600'
+      <span className={`font-semibold text-sm ${
+        voteCount > 0 ? 'text-green-600' : voteCount < 0 ? 'text-red-600' : 'text-gray-600'
       }`}>
         {voteCount}
       </span>
       
       <button
-        onClick={() => handleVote(-1)}
-        disabled={loading}
-        className={`p-2 rounded-full transition-colors ${
-          currentVote === -1
+        onClick={() => handleVote('down')}
+        disabled={loading || !isAuthenticated}
+        className={`p-2 rounded-full transition-colors duration-200 ${
+          currentVote === 'down'
             ? 'bg-red-100 text-red-600'
             : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
-        } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        } ${loading || !isAuthenticated ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <ChevronDown size={20} />
       </button>

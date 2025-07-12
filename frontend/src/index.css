@@ -4,6 +4,200 @@
 @import "./styles/responsive.css";
 @import "./styles/ultra-responsive.css";
 
+/* Rich Text Editor Styles */
+.ProseMirror {
+  outline: none;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+/* Mention Styles */
+.mention {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mention:hover {
+  background-color: #bfdbfe;
+  color: #1e40af;
+}
+
+.ProseMirror p {
+  margin: 0.5rem 0;
+}
+
+.ProseMirror p:first-child {
+  margin-top: 0;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror strong {
+  font-weight: 700;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror u {
+  text-decoration: underline;
+}
+
+.ProseMirror s {
+  text-decoration: line-through;
+}
+
+.ProseMirror code {
+  background-color: #f3f4f6;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+}
+
+.ProseMirror pre {
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.ProseMirror pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.ProseMirror li {
+  margin: 0.25rem 0;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.ProseMirror a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.ProseMirror a:hover {
+  color: #1d4ed8;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+  display: block;
+}
+
+.ProseMirror .has-focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Question description display styles */
+.question-description {
+  line-height: 1.6;
+}
+
+.question-description p {
+  margin: 0.5rem 0;
+}
+
+.question-description strong {
+  font-weight: 700;
+}
+
+.question-description em {
+  font-style: italic;
+}
+
+.question-description u {
+  text-decoration: underline;
+}
+
+.question-description s {
+  text-decoration: line-through;
+}
+
+.question-description code {
+  background-color: #f3f4f6;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+}
+
+.question-description pre {
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.question-description ul, .question-description ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.question-description li {
+  margin: 0.25rem 0;
+}
+
+.question-description blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.question-description a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.question-description a:hover {
+  color: #1d4ed8;
+}
+
+.question-description img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+  display: block;
+}
+
 /* Custom styles for the StackIt app */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -195,18 +389,4 @@ input:focus, textarea:focus, select:focus {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
-}
-
-/* Rich text editor styles */
-.ProseMirror {
-  outline: none;
-  padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  min-height: 120px;
-}
-
-.ProseMirror:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }

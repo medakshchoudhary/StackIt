@@ -42,6 +42,18 @@ exports.getQuestions = async (req, res, next) => {
             .skip(startIndex)
             .limit(limit);
 
+        // Add user vote information if user is authenticated
+        let questionsWithVotes = questions;
+        if (req.user) {
+            const userId = req.user.id;
+            questionsWithVotes = questions.map(question => {
+                const questionObj = question.toObject();
+                const userVote = question.votes.find(vote => vote.user.toString() === userId);
+                questionObj.userVote = userVote ? userVote.vote : null;
+                return questionObj;
+            });
+        }
+
         const pagination = {};
 
         if (endIndex < total) {
@@ -60,9 +72,9 @@ exports.getQuestions = async (req, res, next) => {
 
         res.json({
             success: true,
-            count: questions.length,
+            count: questionsWithVotes.length,
             pagination,
-            data: questions
+            data: questionsWithVotes
         });
     } catch (error) {
         next(error);
@@ -126,9 +138,16 @@ exports.getQuestion = async (req, res, next) => {
             await question.save();
         }
 
+        // Add user vote information if user is authenticated
+        const questionResponse = question.toObject();
+        if (req.user) {
+            const userVote = question.votes.find(vote => vote.user.toString() === req.user.id);
+            questionResponse.userVote = userVote ? userVote.vote : null;
+        }
+
         res.json({
             success: true,
-            data: question
+            data: questionResponse
         });
     } catch (error) {
         next(error);
@@ -321,6 +340,91 @@ exports.acceptAnswer = async (req, res, next) => {
         res.json({
             success: true,
             data: question
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Vote on question
+// @route   POST /api/questions/:id/vote
+// @access  Private
+exports.voteQuestion = async (req, res, next) => {
+    try {
+        const { value } = req.body; // 'up' or 'down'
+        const questionId = req.params.id;
+        const userId = req.user.id;
+
+        if (!['up', 'down'].includes(value)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid vote type. Must be "up" or "down"'
+            });
+        }
+
+        const question = await Question.findById(questionId);
+        if (!question) {
+            return res.status(404).json({
+                success: false,
+                message: 'Question not found'
+            });
+        }
+
+        // Check if user has already voted
+        const existingVoteIndex = question.votes.findIndex(
+            v => v.user.toString() === userId
+        );
+
+        let userVote = null;
+
+        if (existingVoteIndex !== -1) {
+            const existingVote = question.votes[existingVoteIndex];
+            
+            // If same vote, remove it (toggle)
+            if (existingVote.vote === value) {
+                question.votes.splice(existingVoteIndex, 1);
+                // Update vote count
+                if (value === 'up') {
+                    question.voteCount = Math.max(0, question.voteCount - 1);
+                } else {
+                    question.voteCount = Math.min(0, question.voteCount + 1);
+                }
+                userVote = null;
+            } else {
+                // If different vote, replace it
+                question.votes[existingVoteIndex].vote = value;
+                // Update vote count (2 point swing)
+                if (value === 'up') {
+                    question.voteCount += 2;
+                } else {
+                    question.voteCount -= 2;
+                }
+                userVote = value;
+            }
+        } else {
+            // Add new vote
+            question.votes.push({
+                user: userId,
+                vote: value
+            });
+            // Update vote count
+            if (value === 'up') {
+                question.voteCount += 1;
+            } else {
+                question.voteCount -= 1;
+            }
+            userVote = value;
+        }
+
+        await question.save();
+
+        res.json({
+            success: true,
+            data: {
+                voteCount: question.voteCount,
+                userVote: userVote,
+                message: 'Vote recorded successfully'
+            }
         });
     } catch (error) {
         next(error);

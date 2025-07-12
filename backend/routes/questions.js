@@ -7,7 +7,8 @@ const {
     createQuestion,
     updateQuestion,
     deleteQuestion,
-    acceptAnswer
+    acceptAnswer,
+    voteQuestion
 } = require('../controllers/questionController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -44,5 +45,8 @@ router.route('/:id')
 
 // Accept answer route
 router.post('/:id/accept-answer/:answerId', protect, acceptAnswer);
+
+// Vote on question route
+router.post('/:id/vote', protect, voteQuestion);
 
 module.exports = router;

@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { questionsAPI } from '../services/questionsAPI';
 import RichTextEditor from '../components/RichTextEditor';
 import TagInput from '../components/TagInput';
+import { processImagesInContent, containsDataUrls } from '../utils/imageUtils';
 
 const questionSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters').max(200, 'Title cannot exceed 200 characters'),
@@ -40,7 +41,21 @@ const AskQuestionPage = () => {
     setError('');
 
     try {
-      const response = await questionsAPI.createQuestion(data);
+      // Process any images in the description that might be data URLs
+      let processedDescription = data.description;
+      
+      // Check if there are any data URLs that need to be uploaded
+      if (containsDataUrls(data.description)) {
+        setError('Processing images...');
+        processedDescription = await processImagesInContent(data.description);
+      }
+      
+      const questionData = {
+        ...data,
+        description: processedDescription
+      };
+      
+      const response = await questionsAPI.createQuestion(questionData);
       navigate(`/questions/${response.data._id}`);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create question');

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { Plus, MessageSquare, X, Filter } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { questionsAPI } from '../services/questionsAPI';
+import { tagsAPI } from '../services/tagsAPI';
 import QuestionCard from '../components/QuestionCard';
 import SearchBar from '../components/SearchBar';
 
@@ -11,16 +12,20 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [availableTags, setAvailableTags] = useState([]);
+  const [showTagFilter, setShowTagFilter] = useState(false);
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchQuestions();
-  }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchTags();
+  }, [searchQuery, selectedTag]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchQuestions = async () => {
     try {
       setLoading(true);
-      const response = await questionsAPI.getQuestions(1, 10, searchQuery);
+      const response = await questionsAPI.getQuestions(1, 10, searchQuery, selectedTag);
       setQuestions(response.data || []);
     } catch (err) {
       setError('Failed to fetch questions');
@@ -30,8 +35,36 @@ const HomePage = () => {
     }
   };
 
+  const fetchTags = async () => {
+    try {
+      const response = await tagsAPI.getTags();
+      setAvailableTags(response.tags || []);
+    } catch (err) {
+      console.error('Error fetching tags:', err);
+    }
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
+  };
+
+  const handleTagFilter = (tag) => {
+    setSelectedTag(tag);
+    setShowTagFilter(false);
+  };
+
+  const clearTagFilter = () => {
+    setSelectedTag('');
+  };
+
+  const handleVoteChange = (questionId, voteData) => {
+    setQuestions(prevQuestions => 
+      prevQuestions.map(q => 
+        q._id === questionId 
+          ? { ...q, voteCount: voteData.voteCount, userVote: voteData.userVote }
+          : q
+      )
+    );
   };
 
   if (loading) {
@@ -68,6 +101,51 @@ const HomePage = () => {
       {/* Search Bar */}
       <div className="mb-6 sm:mb-8">
         <SearchBar onSearch={handleSearch} />
+      </div>
+
+      {/* Tag Filter */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowTagFilter(!showTagFilter)}
+            className="flex items-center space-x-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm"
+          >
+            <Filter size={14} />
+            <span>Filter by Tag</span>
+          </button>
+          
+          {selectedTag && (
+            <div className="flex items-center space-x-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm">
+              <span>Tag: {selectedTag}</span>
+              <button
+                onClick={clearTagFilter}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+        </div>
+        
+        {showTagFilter && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-700 mb-3">Select a tag to filter:</h3>
+            <div className="flex flex-wrap gap-2">
+              {availableTags.map((tag) => (
+                <button
+                  key={tag._id}
+                  onClick={() => handleTagFilter(tag.name)}
+                  className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-sm hover:bg-gray-100 transition-colors"
+                >
+                  {tag.name}
+                  {tag.questionCount > 0 && (
+                    <span className="ml-1 text-xs text-gray-500">({tag.questionCount})</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {error && (
@@ -112,7 +190,7 @@ const HomePage = () => {
         ) : (
           questions.map((question) => (
             <div key={question._id} className="transform hover:scale-[1.02] transition-transform duration-200">
-              <QuestionCard question={question} />
+              <QuestionCard question={question} onVoteChange={handleVoteChange} />
             </div>
           ))
         )}

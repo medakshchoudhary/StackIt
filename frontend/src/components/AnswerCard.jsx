@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Edit, Trash2 } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 import { formatDate } from '../utils/helpers';
 import VoteComponent from './VoteComponent';
 import CommentsSection from './CommentsSection';
@@ -28,7 +28,7 @@ const AnswerCard = ({ answer, questionAuthorId, isAccepted, onVote, onAccept, on
   const getUserVote = () => {
     if (!user || !answer.votes) return null;
     const userVote = answer.votes.find(vote => vote.user === user._id);
-    return userVote ? userVote.value : null;
+    return userVote ? userVote.vote : null;
   };
 
   const handleVoteChange = (voteData) => {
@@ -50,7 +50,8 @@ const AnswerCard = ({ answer, questionAuthorId, isAccepted, onVote, onAccept, on
         {/* Vote Section */}
         <div className="flex flex-col items-center space-y-2">
           <VoteComponent
-            answerId={answer._id}
+            type="answer"
+            itemId={answer._id}
             initialVoteCount={answer.voteCount || 0}
             userVote={getUserVote()}
             onVoteChange={handleVoteChange}
@@ -71,7 +72,7 @@ const AnswerCard = ({ answer, questionAuthorId, isAccepted, onVote, onAccept, on
         {/* Answer Content */}
         <div className="flex-1">
           <div 
-            className="prose prose-sm max-w-none mb-4"
+            className="prose prose-sm max-w-none mb-4 question-description"
             dangerouslySetInnerHTML={{ __html: answer.content }}
           />
 

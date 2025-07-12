@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    restart: always
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - courier-tracking
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "4300:4300"
+    restart: always
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongo
+    networks:
+      - courier-tracking
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - courier-tracking
+
+volumes:
+  mongo-data:
+
+networks:
+  courier-tracking:
+    driver: bridge
