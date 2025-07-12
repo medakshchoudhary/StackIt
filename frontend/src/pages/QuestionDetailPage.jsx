@@ -9,6 +9,7 @@ import { questionsAPI } from '../services/questionsAPI';
 import { answersAPI } from '../services/answersAPI';
 import RichTextEditor from '../components/RichTextEditor';
 import AnswerCard from '../components/AnswerCard';
+import AIAnswer from '../components/AIAnswer';
 import { timeAgo } from '../utils/helpers';
 
 const answerSchema = z.object({
@@ -207,6 +208,9 @@ const QuestionDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Answer Section */}
+      <AIAnswer questionId={id} />
 
       {/* Answers Section */}
       <div className="mb-8">
