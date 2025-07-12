@@ -4,10 +4,10 @@ StackIt is a clean, minimal, and responsive question-and-answer platform designe
 
 ---
 
-## Env format : 
+# Env format : 
 
-# Frontend : VITE_API_URL=http://localhost:5500/api
-# Backend : 
+## Frontend : VITE_API_URL=http://localhost:5500/api
+## Backend : 
 
   PORT=5500
   NODE_ENV=development
@@ -18,7 +18,7 @@ StackIt is a clean, minimal, and responsive question-and-answer platform designe
   RATE_LIMIT_WINDOW=...
   RATE_LIMIT_MAX=...
 
-  # Google Gemini API Key
+  Google Gemini API Key
   GEMINI_API_KEY=Get your API key from: https://ai.google.dev
 
 ## 👥 Team Details
