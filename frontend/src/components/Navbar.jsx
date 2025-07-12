@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, Plus, LogOut, User } from 'lucide-react';
+import { Plus, LogOut, User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -33,13 +34,16 @@ const Navbar = () => {
                   <span>Ask Question</span>
                 </Link>
                 
-                <button className="relative p-2 text-gray-600 hover:text-gray-800">
-                  <Bell size={20} />
-                  {/* Notification badge */}
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    3
-                  </span>
-                </button>
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="text-gray-600 hover:text-gray-800 font-medium"
+                  >
+                    Admin Panel
+                  </Link>
+                )}
+                
+                <NotificationDropdown />
 
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">

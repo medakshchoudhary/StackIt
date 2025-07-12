@@ -8,13 +8,15 @@ const {
 } = require('../controllers/answerController');
 const { protect } = require('../middleware/authMiddleware');
 
+// Create answer for a question
 router.post(
-    '/questions/:questionId/answers',
+    '/:questionId/answers',
     protect,
     [check('content', 'Answer content is required').not().isEmpty()],
     createAnswer
 );
 
+// Update and delete specific answers
 router.route('/:id')
     .put(protect, updateAnswer)
     .delete(protect, deleteAnswer);

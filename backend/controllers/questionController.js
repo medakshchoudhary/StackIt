@@ -1,5 +1,6 @@
 const Question = require('../models/Question');
 const { validationResult } = require('express-validator');
+const Answer = require('../models/Answer');
 
 // @desc    Get all questions
 // @route   GET /api/questions
@@ -10,10 +11,33 @@ exports.getQuestions = async (req, res, next) => {
         const limit = parseInt(req.query.limit, 10) || 10;
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        const total = await Question.countDocuments();
+        
+        // Search functionality
+        const search = req.query.search || '';
+        const tag = req.query.tag || '';
+        
+        let query = {};
+        
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ];
+        }
+        
+        if (tag) {
+            const Tag = require('../models/Tag');
+            const tagDoc = await Tag.findOne({ name: { $regex: tag, $options: 'i' } });
+            if (tagDoc) {
+                query.tags = tagDoc._id;
+            }
+        }
+        
+        const total = await Question.countDocuments(query);
 
-        const questions = await Question.find()
+        const questions = await Question.find(query)
             .populate('author', 'username')
+            .populate('tags', 'name description') // Add description to populate tags properly
             .sort('-createdAt')
             .skip(startIndex)
             .limit(limit);
@@ -52,6 +76,7 @@ exports.getQuestion = async (req, res, next) => {
     try {
         const question = await Question.findById(req.params.id)
             .populate('author', 'username')
+            .populate('tags', 'name description') // Add this line to populate tags properly
             .populate({
                 path: 'answers',
                 populate: {
@@ -92,12 +117,59 @@ exports.createQuestion = async (req, res, next) => {
 
         const { title, description, tags } = req.body;
 
+        // Debug: Log the received data
+        console.log('Received question data:', { title, description, tags, tagsType: typeof tags });
+
+        // Process tags - handle both string and array formats
+        let tagArray = tags;
+        if (typeof tags === 'string') {
+            try {
+                tagArray = JSON.parse(tags);
+            } catch (e) {
+                // If parsing fails, split by comma
+                tagArray = tags.split(',').map(tag => tag.trim());
+            }
+        }
+
+        // Ensure tagArray is actually an array
+        if (!Array.isArray(tagArray)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Tags must be an array' 
+            });
+        }
+
+        // Process tags - convert tag names to ObjectIds, create new tags if needed
+        const Tag = require('../models/Tag');
+        const tagIds = [];
+        
+        for (const tagName of tagArray) {
+            let tag = await Tag.findOne({ name: tagName.toLowerCase() });
+            
+            if (!tag) {
+                // Create new tag if it doesn't exist
+                tag = await Tag.create({
+                    name: tagName.toLowerCase(),
+                    description: `Tag for ${tagName}`,
+                    creator: req.user.id,
+                    isApproved: true // Auto-approve for now
+                });
+                console.log('Created new tag:', tag.name);
+            }
+            
+            tagIds.push(tag._id);
+        }
+
         const question = await Question.create({
             title,
             description,
-            tags,
+            tags: tagIds,
             author: req.user.id
         });
+
+        // Populate the tags and author before sending response
+        await question.populate('tags', 'name description');
+        await question.populate('author', 'username');
 
         res.status(201).json({
             success: true,
@@ -171,6 +243,54 @@ exports.deleteQuestion = async (req, res, next) => {
         res.json({
             success: true,
             data: {}
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Accept answer
+// @route   POST /api/questions/:id/accept-answer/:answerId
+// @access  Private
+exports.acceptAnswer = async (req, res, next) => {
+    try {
+        const question = await Question.findById(req.params.id);
+
+        if (!question) {
+            return res.status(404).json({
+                success: false,
+                message: 'Question not found'
+            });
+        }
+
+        // Make sure user is question owner
+        if (question.author.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: 'Only question author can accept answers'
+            });
+        }
+
+        // Check if answer exists and belongs to this question
+        const answer = await Answer.findById(req.params.answerId);
+        if (!answer || answer.question.toString() !== req.params.id) {
+            return res.status(404).json({
+                success: false,
+                message: 'Answer not found'
+            });
+        }
+
+        // Update question with accepted answer
+        question.acceptedAnswer = req.params.answerId;
+        await question.save();
+
+        // Mark answer as accepted
+        answer.isAccepted = true;
+        await answer.save();
+
+        res.json({
+            success: true,
+            data: question
         });
     } catch (error) {
         next(error);

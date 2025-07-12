@@ -7,6 +7,7 @@ import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import AskQuestionPage from '../pages/AskQuestionPage';
 import QuestionDetailPage from '../pages/QuestionDetailPage';
+import AdminPanel from '../pages/AdminPanel';
 import ProtectedRoute from '../components/ProtectedRoute';
 
 const AppRouter = () => {
@@ -22,6 +23,11 @@ const AppRouter = () => {
             <Route path="ask" element={
               <ProtectedRoute>
                 <AskQuestionPage />
+              </ProtectedRoute>
+            } />
+            <Route path="admin" element={
+              <ProtectedRoute>
+                <AdminPanel />
               </ProtectedRoute>
             } />
           </Route>

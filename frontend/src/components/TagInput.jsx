@@ -1,16 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
+import { tagsAPI } from '../services/tagsAPI';
 
 const TagInput = ({ tags = [], onChange, placeholder = "Add tags..." }) => {
   const [inputValue, setInputValue] = useState('');
-  const [suggestions] = useState([
-    'JavaScript', 'React', 'Node.js', 'Python', 'Java', 'C++', 'HTML', 'CSS',
-    'TypeScript', 'Vue.js', 'Angular', 'Express', 'MongoDB', 'PostgreSQL',
-    'GraphQL', 'REST API', 'Docker', 'AWS', 'Git', 'Algorithm', 'Data Structure'
-  ]);
+  const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    // Fetch all tags on component mount
+    const fetchTags = async () => {
+      try {
+        const response = await tagsAPI.getTags();
+        setSuggestions(response.data?.map(tag => tag.name) || []);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+        // Fallback to hardcoded suggestions
+        setSuggestions([
+          'JavaScript', 'React', 'Node.js', 'Python', 'Java', 'C++', 'HTML', 'CSS',
+          'TypeScript', 'Vue.js', 'Angular', 'Express', 'MongoDB', 'PostgreSQL',
+          'GraphQL', 'REST API', 'Docker', 'AWS', 'Git', 'Algorithm', 'Data Structure'
+        ]);
+      }
+    };
+    fetchTags();
+  }, []);
 
   useEffect(() => {
     if (inputValue.trim()) {

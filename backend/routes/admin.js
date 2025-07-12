@@ -4,7 +4,8 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 const {
     getUsers,
     banUser,
-    getSiteStats
+    getSiteStats,
+    sendGlobalNotification
 } = require('../controllers/adminController');
 
 // Fix: Change how we apply middleware
@@ -15,5 +16,6 @@ router.use(authorize('admin'));
 router.get('/users', getUsers);
 router.patch('/users/:id/ban', banUser);
 router.get('/stats', getSiteStats);
+router.post('/global-notification', sendGlobalNotification);
 
 module.exports = router;

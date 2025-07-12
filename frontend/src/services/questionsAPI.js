@@ -1,8 +1,12 @@
 import axios from './axios';
 
 export const questionsAPI = {
-  getQuestions: async (page = 1, limit = 10) => {
-    const response = await axios.get(`/questions?page=${page}&limit=${limit}`);
+  getQuestions: async (page = 1, limit = 10, search = '', tag = '') => {
+    const params = new URLSearchParams({ page, limit });
+    if (search) params.append('search', search);
+    if (tag) params.append('tag', tag);
+    
+    const response = await axios.get(`/questions?${params}`);
     return response.data;
   },
 
@@ -23,6 +27,11 @@ export const questionsAPI = {
 
   deleteQuestion: async (id) => {
     const response = await axios.delete(`/questions/${id}`);
+    return response.data;
+  },
+
+  acceptAnswer: async (questionId, answerId) => {
+    const response = await axios.post(`/questions/${questionId}/accept-answer/${answerId}`);
     return response.data;
   }
 };

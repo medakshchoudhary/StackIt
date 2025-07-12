@@ -40,7 +40,8 @@ app.use(limiter);
 // Mount routers
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/questions', require('./routes/questions'));
-app.use('/api/answers', require('./routes/answers'));
+app.use('/api/questions', require('./routes/answers')); // Mount answers under questions
+app.use('/api/answers', require('./routes/answers')); // Also mount under answers for direct access
 app.use('/api/votes', require('./routes/votes'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/tags', require('./routes/tags'));
@@ -49,7 +50,7 @@ app.use('/api/admin', require('./routes/admin'));
 // Error handler middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5500;
 
 app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

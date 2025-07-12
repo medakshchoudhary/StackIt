@@ -65,10 +65,21 @@ exports.login = async (req, res, next) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { email, password } = req.body;
+        const { email, username, password } = req.body;
+        const loginField = email || username;
 
-        // Check if user exists
-        const user = await User.findOne({ email });
+        if (!loginField) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide email or username'
+            });
+        }
+
+        // Check if user exists (by email or username)
+        const user = await User.findOne({ 
+            $or: [{ email: loginField }, { username: loginField }] 
+        });
+        
         if (!user) {
             return res.status(401).json({
                 success: false,

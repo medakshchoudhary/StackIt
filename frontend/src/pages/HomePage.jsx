@@ -4,29 +4,35 @@ import { Plus } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { questionsAPI } from '../services/questionsAPI';
 import QuestionCard from '../components/QuestionCard';
+import SearchBar from '../components/SearchBar';
 
 const HomePage = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        setLoading(true);
-        const response = await questionsAPI.getQuestions();
-        setQuestions(response.data || []);
-      } catch (err) {
-        setError('Failed to fetch questions');
-        console.error('Error fetching questions:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchQuestions();
-  }, []);
+  }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      const response = await questionsAPI.getQuestions(1, 10, searchQuery);
+      setQuestions(response.data || []);
+    } catch (err) {
+      setError('Failed to fetch questions');
+      console.error('Error fetching questions:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
 
   if (loading) {
     return (
@@ -53,10 +59,15 @@ const HomePage = () => {
             to="/ask"
             className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <Plus size={20} />
+            <Plus size={16} />
             <span>Ask Question</span>
           </Link>
         )}
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-8">
+        <SearchBar onSearch={handleSearch} />
       </div>
 
       {error && (

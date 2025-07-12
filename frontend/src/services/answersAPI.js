@@ -17,7 +17,7 @@ export const answersAPI = {
   },
 
   voteAnswer: async (answerId, value) => {
-    const response = await axios.post(`/answers/${answerId}/vote`, { value });
+    const response = await axios.post(`/votes/answers/${answerId}/vote`, { value });
     return response.data;
   }
 };

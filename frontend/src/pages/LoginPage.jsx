@@ -31,12 +31,17 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     setError('');
+    
+    console.log('Attempting login with data:', data);
 
     try {
       const response = await authAPI.login(data);
+      console.log('Login successful:', response);
       login(response.user, response.token);
       navigate(from, { replace: true });
     } catch (err) {
+      console.error('Login error:', err);
+      console.error('Error response:', err.response);
       setError(err.response?.data?.message || 'Login failed');
     } finally {
       setIsLoading(false);

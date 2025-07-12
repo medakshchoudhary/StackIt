@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
+const Notification = require('../models/Notification');
 const asyncHandler = require('express-async-handler');
 
 // @desc    Get all users (with filters and pagination)
@@ -104,4 +105,37 @@ exports.getSiteStats = asyncHandler(async (req, res) => {
     };
 
     res.json(stats);
+});
+
+// @desc    Send global notification to all users
+// @route   POST /api/admin/global-notification
+// @access  Private (Admin only)
+exports.sendGlobalNotification = asyncHandler(async (req, res) => {
+    const { message } = req.body;
+    
+    if (!message) {
+        return res.status(400).json({
+            success: false,
+            message: 'Message is required'
+        });
+    }
+
+    // Get all users except the admin sending the notification
+    const users = await User.find({ _id: { $ne: req.user.id } }).select('_id');
+    
+    // Create notifications for all users
+    const notifications = users.map(user => ({
+        recipient: user._id,
+        type: 'announcement',
+        message: message,
+        actor: req.user.id,
+        read: false
+    }));
+
+    await Notification.insertMany(notifications);
+
+    res.json({
+        success: true,
+        message: `Global notification sent to ${users.length} users`
+    });
 });

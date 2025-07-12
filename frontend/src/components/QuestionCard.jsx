@@ -25,7 +25,7 @@ const QuestionCard = ({ question }) => {
                 key={index}
                 className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
               >
-                {tag}
+                {typeof tag === 'string' ? tag : tag.name}
               </span>
             ))}
           </div>
