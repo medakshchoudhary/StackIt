@@ -42,6 +42,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/questions', require('./routes/questions'));
 app.use('/api/questions', require('./routes/answers')); // Mount answers under questions
 app.use('/api/answers', require('./routes/answers')); // Also mount under answers for direct access
+app.use('/api/answers', require('./routes/comments')); // Mount comments under answers
 app.use('/api/votes', require('./routes/votes'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/tags', require('./routes/tags'));

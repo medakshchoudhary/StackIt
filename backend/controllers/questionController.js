@@ -92,9 +92,39 @@ exports.getQuestion = async (req, res, next) => {
             });
         }
 
-        // Increment views
-        question.views += 1;
-        await question.save();
+        // Increment views only if user hasn't viewed this question recently
+        const userId = req.user?.id;
+        const now = new Date();
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+        if (userId) {
+            // For authenticated users, check if they viewed this question in the last 24 hours
+            const existingView = question.viewedBy.find(view => 
+                view.user.toString() === userId && 
+                view.viewedAt > oneDayAgo
+            );
+
+            if (!existingView) {
+                // Remove old view if exists
+                question.viewedBy = question.viewedBy.filter(view => 
+                    view.user.toString() !== userId
+                );
+                
+                // Add new view
+                question.viewedBy.push({
+                    user: userId,
+                    viewedAt: now
+                });
+                
+                question.views += 1;
+                await question.save();
+            }
+        } else {
+            // For anonymous users, increment view count every time
+            // (This can be improved with session tracking or IP-based tracking)
+            question.views += 1;
+            await question.save();
+        }
 
         res.json({
             success: true,

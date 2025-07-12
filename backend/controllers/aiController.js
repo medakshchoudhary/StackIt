@@ -99,10 +99,17 @@ exports.getAnswer = asyncHandler(async (req, res) => {
 
 // @desc    Vote on AI answer helpfulness
 // @route   POST /api/ai/answer/:answerId/vote
-// @access  Public
+// @access  Private
 exports.voteOnAnswer = asyncHandler(async (req, res) => {
     const { answerId } = req.params;
     const { vote } = req.body; // 'helpful' or 'unhelpful'
+
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: 'Authentication required'
+        });
+    }
 
     const aiAnswer = await AIAnswer.findById(answerId);
     if (!aiAnswer) {
@@ -112,28 +119,84 @@ exports.voteOnAnswer = asyncHandler(async (req, res) => {
         });
     }
 
-    // Update vote counts
-    if (vote === 'helpful') {
-        aiAnswer.helpfulVotes += 1;
-        aiAnswer.isHelpful += 1;
-    } else if (vote === 'unhelpful') {
-        aiAnswer.unhelpfulVotes += 1;
-        aiAnswer.isHelpful -= 1;
-    } else {
+    if (!['helpful', 'unhelpful'].includes(vote)) {
         return res.status(400).json({
             success: false,
             message: 'Invalid vote type'
         });
     }
 
+    // Check if user has already voted
+    const existingVoteIndex = aiAnswer.votes.findIndex(
+        v => v.user.toString() === req.user.id
+    );
+
+    if (existingVoteIndex !== -1) {
+        const existingVote = aiAnswer.votes[existingVoteIndex];
+        
+        // If same vote, remove it (toggle)
+        if (existingVote.vote === vote) {
+            aiAnswer.votes.splice(existingVoteIndex, 1);
+            
+            // Update counters
+            if (vote === 'helpful') {
+                aiAnswer.helpfulVotes = Math.max(0, aiAnswer.helpfulVotes - 1);
+                aiAnswer.isHelpful -= 1;
+            } else {
+                aiAnswer.unhelpfulVotes = Math.max(0, aiAnswer.unhelpfulVotes - 1);
+                aiAnswer.isHelpful += 1;
+            }
+        } else {
+            // Change vote
+            const oldVote = existingVote.vote;
+            existingVote.vote = vote;
+            
+            // Update counters
+            if (oldVote === 'helpful') {
+                aiAnswer.helpfulVotes = Math.max(0, aiAnswer.helpfulVotes - 1);
+                aiAnswer.isHelpful -= 1;
+            } else {
+                aiAnswer.unhelpfulVotes = Math.max(0, aiAnswer.unhelpfulVotes - 1);
+                aiAnswer.isHelpful += 1;
+            }
+            
+            if (vote === 'helpful') {
+                aiAnswer.helpfulVotes += 1;
+                aiAnswer.isHelpful += 1;
+            } else {
+                aiAnswer.unhelpfulVotes += 1;
+                aiAnswer.isHelpful -= 1;
+            }
+        }
+    } else {
+        // Add new vote
+        aiAnswer.votes.push({
+            user: req.user.id,
+            vote: vote
+        });
+        
+        // Update counters
+        if (vote === 'helpful') {
+            aiAnswer.helpfulVotes += 1;
+            aiAnswer.isHelpful += 1;
+        } else {
+            aiAnswer.unhelpfulVotes += 1;
+            aiAnswer.isHelpful -= 1;
+        }
+    }
+
     await aiAnswer.save();
+
+    // Get user's current vote
+    const userVote = aiAnswer.votes.find(v => v.user.toString() === req.user.id);
 
     res.json({
         success: true,
         data: {
             helpfulVotes: aiAnswer.helpfulVotes,
             unhelpfulVotes: aiAnswer.unhelpfulVotes,
-            isHelpful: aiAnswer.isHelpful
+            isHelpful: aiAnswer.isHelpful,
+            userVote: userVote ? userVote.vote : null
         }
     });
 });

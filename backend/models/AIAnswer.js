@@ -28,6 +28,16 @@ const aiAnswerSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    votes: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        vote: {
+            type: String,
+            enum: ['helpful', 'unhelpful']
+        }
+    }],
     generatedAt: {
         type: Date,
         default: Date.now

@@ -1,6 +1,8 @@
-import React, { useReducer, useEffect } from 'react';
-import { AuthContext } from './AuthContextProvider';
+import React, { useReducer, useEffect, createContext } from 'react';
 import { getToken, getUser, setToken, setUser, removeToken, removeUser } from '../utils/helpers';
+
+// Create the AuthContext
+const AuthContext = createContext();
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -77,3 +79,15 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+// useAuth hook
+export const useAuth = () => {
+  const context = React.useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+// Export the context
+export { AuthContext };

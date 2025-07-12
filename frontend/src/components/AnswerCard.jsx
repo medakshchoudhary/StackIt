@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Check, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { answersAPI } from '../services/answersAPI';
 import { formatDate } from '../utils/helpers';
 import VoteComponent from './VoteComponent';
+import CommentsSection from './CommentsSection';
 
 const AnswerCard = ({ answer, questionAuthorId, isAccepted, onVote, onAccept, onUpdate, onDelete }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const isAuthor = user?._id === answer.author?._id;
   const isQuestionAuthor = user?._id === questionAuthorId;
   const canAccept = isQuestionAuthor && !isAccepted;
@@ -105,6 +105,9 @@ const AnswerCard = ({ answer, questionAuthorId, isAccepted, onVote, onAccept, on
           </div>
         </div>
       </div>
+
+      {/* Comments Section */}
+      <CommentsSection answerId={answer._id} />
     </div>
   );
 };

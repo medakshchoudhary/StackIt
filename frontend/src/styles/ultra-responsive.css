@@ -1,0 +1,326 @@
+/* Mobile-first responsive enhancements for StackIt */
+
+/* Ultra-responsive container */
+.container-ultra {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 1rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .container-ultra {
+    max-width: 640px;
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-ultra {
+    max-width: 768px;
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-ultra {
+    max-width: 1024px;
+    padding: 0 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-ultra {
+    max-width: 1280px;
+    padding: 0 3rem;
+  }
+}
+
+/* Responsive typography scale */
+.text-ultra-sm {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-ultra-base {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-ultra-lg {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-ultra-xl {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-ultra-2xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-ultra-3xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media (min-width: 640px) {
+  .text-ultra-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .text-ultra-base { font-size: 1rem; line-height: 1.5rem; }
+  .text-ultra-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .text-ultra-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .text-ultra-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .text-ultra-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+}
+
+@media (min-width: 1024px) {
+  .text-ultra-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .text-ultra-base { font-size: 1rem; line-height: 1.5rem; }
+  .text-ultra-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .text-ultra-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .text-ultra-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .text-ultra-3xl { font-size: 2.25rem; line-height: 2.5rem; }
+}
+
+/* Ultra-responsive spacing */
+.space-ultra-sm > * + * {
+  margin-top: 0.5rem;
+}
+
+.space-ultra-md > * + * {
+  margin-top: 1rem;
+}
+
+.space-ultra-lg > * + * {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .space-ultra-sm > * + * { margin-top: 0.75rem; }
+  .space-ultra-md > * + * { margin-top: 1.5rem; }
+  .space-ultra-lg > * + * { margin-top: 2rem; }
+}
+
+@media (min-width: 1024px) {
+  .space-ultra-sm > * + * { margin-top: 1rem; }
+  .space-ultra-md > * + * { margin-top: 2rem; }
+  .space-ultra-lg > * + * { margin-top: 3rem; }
+}
+
+/* Ultra-responsive buttons */
+.btn-ultra {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .btn-ultra {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    border-radius: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .btn-ultra {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    border-radius: 1rem;
+  }
+}
+
+/* Ultra-responsive cards */
+.card-ultra {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 640px) {
+  .card-ultra {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-ultra {
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.card-ultra:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Ultra-responsive forms */
+.form-ultra input,
+.form-ultra textarea,
+.form-ultra select {
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .form-ultra input,
+  .form-ultra textarea,
+  .form-ultra select {
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .form-ultra input,
+  .form-ultra textarea,
+  .form-ultra select {
+    padding: 1.25rem;
+    font-size: 1.125rem;
+    border-radius: 1rem;
+  }
+}
+
+.form-ultra input:focus,
+.form-ultra textarea:focus,
+.form-ultra select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Ultra-responsive navigation */
+.nav-ultra {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .nav-ultra {
+    padding: 1.5rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav-ultra {
+    padding: 2rem 3rem;
+  }
+}
+
+/* Mobile-specific utilities */
+@media (max-width: 639px) {
+  .mobile-stack {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .mobile-full {
+    width: 100%;
+  }
+  
+  .mobile-center {
+    text-align: center;
+  }
+  
+  .mobile-hidden {
+    display: none;
+  }
+  
+  .mobile-p-4 {
+    padding: 1rem;
+  }
+  
+  .mobile-text-sm {
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet-specific utilities */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .tablet-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .tablet-p-6 {
+    padding: 1.5rem;
+  }
+  
+  .tablet-text-base {
+    font-size: 1rem;
+  }
+}
+
+/* Desktop-specific utilities */
+@media (min-width: 1024px) {
+  .desktop-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .desktop-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .desktop-p-8 {
+    padding: 2rem;
+  }
+  
+  .desktop-text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .desktop-hover-scale {
+    transition: transform 0.2s ease;
+  }
+  
+  .desktop-hover-scale:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Touch-friendly sizing */
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  button, a, input, textarea {
+    min-height: 44px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .high-dpi-border {
+    border-width: 0.5px;
+  }
+}
+
+/* Orientation changes */
+@media (orientation: portrait) {
+  .portrait-stack {
+    flex-direction: column;
+  }
+}
+
+@media (orientation: landscape) {
+  .landscape-row {
+    flex-direction: row;
+  }
+}

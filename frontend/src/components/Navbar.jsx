@@ -28,16 +28,17 @@ const Navbar = () => {
               <>
                 <Link
                   to="/ask"
-                  className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex items-center space-x-1 sm:space-x-2 bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
                 >
                   <Plus size={16} />
-                  <span>Ask Question</span>
+                  <span className="hidden sm:inline">Ask Question</span>
+                  <span className="sm:hidden">Ask</span>
                 </Link>
                 
                 {user?.role === 'admin' && (
                   <Link
                     to="/admin"
-                    className="text-gray-600 hover:text-gray-800 font-medium"
+                    className="text-gray-600 hover:text-gray-800 font-medium text-sm sm:text-base hidden md:block"
                   >
                     Admin Panel
                   </Link>
@@ -45,10 +46,10 @@ const Navbar = () => {
                 
                 <NotificationDropdown />
 
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    <User size={20} className="text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="flex items-center space-x-1 sm:space-x-2">
+                    <User size={16} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">
                       {user?.username}
                     </span>
                   </div>
@@ -58,21 +59,21 @@ const Navbar = () => {
                     className="p-2 text-gray-600 hover:text-gray-800"
                     title="Logout"
                   >
-                    <LogOut size={20} />
+                    <LogOut size={16} className="sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4">
                 <Link
                   to="/login"
-                  className="text-gray-600 hover:text-gray-800 font-medium"
+                  className="text-gray-600 hover:text-gray-800 font-medium text-sm sm:text-base"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
                 >
                   Register
                 </Link>

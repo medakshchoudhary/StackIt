@@ -45,11 +45,11 @@ const HomePage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4 sm:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">All Questions</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">All Questions</h1>
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">
             {questions.length} questions found
           </p>
         </div>
@@ -57,54 +57,63 @@ const HomePage = () => {
         {isAuthenticated && (
           <Link
             to="/ask"
-            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-200"
           >
             <Plus size={16} />
-            <span>Ask Question</span>
+            <span className="text-sm sm:text-base">Ask Question</span>
           </Link>
         )}
       </div>
 
       {/* Search Bar */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <SearchBar onSearch={handleSearch} />
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm sm:text-base">
           {error}
         </div>
       )}
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {questions.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg mb-4">No questions found</p>
-            {isAuthenticated ? (
-              <Link
-                to="/ask"
-                className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Plus size={20} />
-                <span>Ask the first question</span>
-              </Link>
-            ) : (
-              <div>
-                <p className="text-gray-500 mb-4">
-                  Sign in to ask your first question
-                </p>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Sign In
-                </Link>
+          <div className="text-center py-12 sm:py-16 lg:py-20">
+            <div className="max-w-md mx-auto">
+              <div className="mb-6">
+                <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
+                </div>
               </div>
-            )}
+              <p className="text-gray-500 text-base sm:text-lg mb-4">No questions found</p>
+              {isAuthenticated ? (
+                <Link
+                  to="/ask"
+                  className="inline-flex items-center space-x-2 bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-200"
+                >
+                  <Plus size={16} />
+                  <span className="text-sm sm:text-base">Ask the first question</span>
+                </Link>
+              ) : (
+                <div>
+                  <p className="text-gray-500 mb-4 text-sm sm:text-base">
+                    Sign in to ask your first question
+                  </p>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-200"
+                  >
+                    <span className="text-sm sm:text-base">Sign In</span>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           questions.map((question) => (
-            <QuestionCard key={question._id} question={question} />
+            <div key={question._id} className="transform hover:scale-[1.02] transition-transform duration-200">
+              <QuestionCard question={question} />
+            </div>
           ))
         )}
       </div>
