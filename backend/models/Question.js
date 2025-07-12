@@ -15,9 +15,9 @@ const questionSchema = new mongoose.Schema({
         minlength: [20, 'Description must be at least 20 characters long']
     },
     tags: [{
-        type: String,
-        required: true,
-        trim: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tag',
+        required: true
     }],
     author: {
         type: mongoose.Schema.Types.ObjectId,

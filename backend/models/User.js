@@ -24,8 +24,24 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
+        enum: ['guest', 'user', 'admin'],
         default: 'user'
+    },
+    isBanned: {
+        type: Boolean,
+        default: false
+    },
+    banReason: {
+        type: String,
+        default: null
+    },
+    reputation: {
+        type: Number,
+        default: 0
+    },
+    lastLoginAt: {
+        type: Date,
+        default: null
     },
     createdAt: {
         type: Date,

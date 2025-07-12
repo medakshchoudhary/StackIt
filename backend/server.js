@@ -31,23 +31,26 @@ if (process.env.NODE_ENV === 'development') {
 
 // Rate limiting
 const limiter = rateLimit({
-    windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+    windowMs: process.env.RATE_LIMIT_WINDOW * 60 * 1000, // 15 minutes
+    max: process.env.RATE_LIMIT_MAX // limit each IP to 100 requests per windowMs
 });
+
 app.use(limiter);
 
-// Routes
+// Mount routers
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/questions', require('./routes/questions'));
 app.use('/api/answers', require('./routes/answers'));
 app.use('/api/votes', require('./routes/votes'));
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/tags', require('./routes/tags'));
+app.use('/api/admin', require('./routes/admin'));
 
-// Error handler
+// Error handler middleware
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
